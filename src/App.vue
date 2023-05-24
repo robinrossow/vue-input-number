@@ -18,7 +18,7 @@ createApp(App)
     <pre>import VueInputNumber from '@robin-rossow/vue-input-number'</pre>
     <h2>Usage</h2>
     <pre>&lt;VueInputNumber v-model="ourModel" /&gt;</pre>
-    <h2>Defaults</h2>
+    <h2>Props</h2>
     <div style="overflow-x: auto">
         <table>
             <thead>
@@ -119,15 +119,6 @@ createApp(App)
         <div>
             Value: {{testNumber}} Type: {{ typeof testNumber }}
         </div>
-    </div>
-
-    <span class="label">
-        Manipulate value
-    </span>
-    <div class="flex">
-        <button @click="testNumber++">Increase</button>
-        <button @click="testNumber--">Decrease</button>
-        <button @click="testNumber = '0'">Set Zero</button>
     </div>
 
     <label class="label">outputType</label>

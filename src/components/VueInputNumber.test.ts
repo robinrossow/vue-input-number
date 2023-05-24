@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import VueInputNumber from '@/components/VueInputNumber.vue'
 import { test, expect, beforeEach } from 'vitest'
 
-let wrapper:ReturnType<typeof mount>
+let wrapper:any
 beforeEach(() => {
     wrapper = mount(VueInputNumber, {
         props: {
