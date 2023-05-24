@@ -36,18 +36,18 @@ import { VueInputNumber } from '@robin-rossow/vue-input-number'
 ```
 
 ### Props
-| Props                   | Required | Type                     | Default                 |
-|-------------------------|----------|--------------------------|-------------------------|
-| >v-model                | ✅        | string &#124; number     | -                       |
-| >outputType             | ❌        | 'Number' &#124; 'String' | 'Number'                |
-| >min                    | ❌        | number                   | Number.MIN_SAFE_INTEGER |
-| >max                    | ❌        | number                   | Number.MAX_SAFE_INTEGER |
-| >precision              | ❌        | number                   | 0                       |
-| >thousandSeparator      | ❌        | string &#124; undefined  | ','                     |
-| >decimalSeparator       | ❌        | string &#124; undefined  | ','                     |
-| >currency               | ❌        | string                   | ''                      |
-| >currencySymbolPosition | ❌        | 'prefix' &#124;'suffix'  | 'prefix'                |
-| >emptyValue             | ❌        | number &#124; ''         | ''                      |
+| Props                  | Required | Type                     | Default                 |
+|------------------------|----------|--------------------------|-------------------------|
+| v-model                | ✅        | string &#124; number     | -                       |
+| outputType             | ❌        | 'Number' &#124; 'String' | 'Number'                |
+| min                    | ❌        | number                   | Number.MIN_SAFE_INTEGER |
+| max                    | ❌        | number                   | Number.MAX_SAFE_INTEGER |
+| precision              | ❌        | number                   | 0                       |
+| thousandSeparator      | ❌        | string &#124; undefined  | ','                     |
+| decimalSeparator       | ❌        | string &#124; undefined  | ','                     |
+| currency               | ❌        | string                   | ''                      |
+| currencySymbolPosition | ❌        | 'prefix' &#124;'suffix'  | 'prefix'                |
+| emptyValue             | ❌        | number &#124; ''         | ''                      |
 
 ## License
 vue-number-input is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
