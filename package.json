@@ -1,6 +1,17 @@
 {
   "name": "@robin-rossow/vue-input-number",
   "version": "1.0.0",
+  "keywords": [
+    "component",
+    "currency",
+    "input",
+    "text",
+    "number",
+    "numeric",
+    "vue3",
+    "vue",
+    "typescript"
+  ],
   "type": "module",
   "private": false,
   "exports": {

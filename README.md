@@ -1,7 +1,7 @@
 # Vue Input Number
-Input field component to display a formatted number value. It is meant to be used with [Vue 3](https://v3.vuejs.org/).
+Input field component to display a formatted number value. It is meant to be used with Vue 3.
 
-This is rewrite based on [vue-numeric](https://github.com/kevinongko/vue-numeric)
+This is rewrite based on [vue-numeric](https://github.com/kevinongko/vue-numeric) written in TypeScript.
 
 ## Installation
 
@@ -15,7 +15,7 @@ $ npm install @robin-rossow/vue-input-number --save
 ```ts
 import VueInputNumberPlugin from '@robin-rossow/vue-input-number'
 
-import {createApp} from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 
 createApp(App)
@@ -25,7 +25,7 @@ createApp(App)
 
 #### Load in component
 ```ts
-import {VueInputNumber} from '@robin-rossow/vue-input-number'
+import { VueInputNumber } from '@robin-rossow/vue-input-number'
 ```
 
 ## Usage
