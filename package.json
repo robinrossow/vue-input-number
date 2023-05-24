@@ -1,11 +1,16 @@
 {
-  "name": "vue-input-number",
-  "version": "0.0.1",
+  "name": "@robin-rossow/vue-input-number",
+  "version": "0.0.2",
   "type": "module",
+  "private": false,
   "exports": {
     ".": "./dist/index.js"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robinrossow/vue-input-number"
+  },
   "files": [
     "dist"
   ],
@@ -14,6 +19,7 @@
     "build": "run-p type-check build-only",
     "preview": "vite preview",
     "test:unit": "vitest",
+    "coverage": "vitest run --coverage",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
@@ -29,6 +35,7 @@
     "@types/jsdom": "^21.1.1",
     "@types/node": "^18.16.8",
     "@vitejs/plugin-vue": "^4.2.3",
+    "@vitest/coverage-c8": "^0.31.1",
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vue/test-utils": "^2.3.2",
     "@vue/tsconfig": "^0.4.0",

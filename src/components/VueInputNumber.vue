@@ -1,102 +1,66 @@
 <template>
     <input
-            v-if="!readOnly"
-            :placeholder="placeholder"
-            :disabled="disabled"
-            v-model="modelValue"
-            :type="allowClear ? 'search' : 'tel'"
-            @blur="onBlurHandler"
-            @input="onInputHandler"
-            @focus="onFocusHandler"
-            @change="onChangeHandler"
+        v-bind="$attrs"
+        ref="inputElement"
+        v-model="amount"
+        :value="amount"
+        @blur="onBlurHandler"
+        @input="onInputHandler"
+        @focus="onFocusHandler"
     >
-    <span
-        v-if="readOnly"
-        :class="{ readOnlyClass }"
-    >{{ amount }}</span>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import {ref, computed, watch} from 'vue'
 import formatMoney from 'accounting-js/lib/formatMoney.js'
 import toFixed from 'accounting-js/lib/toFixed.js'
 import unformat from 'accounting-js/lib/unformat.js'
 
-
-const modelValue = defineModel<string | number>({required: true})
-
 export interface Props {
     modelValue: string | number,
-    allowClear?: boolean,
-    currency?: string,
-    max?: number,
+    outputType?: 'Number' | 'String',
+
     min?: number,
-    minus?: boolean,
-    placeholder?: string,
-    emptyValue?: number | string,
+    max?: number,
+
     precision?: number,
-    separator?: string,
     thousandSeparator?: string | undefined,
     decimalSeparator?: string | undefined,
-    outputType: 'Number' | 'String',
-    readOnly?: boolean,
-    readOnlyClass?: string,
-    disabled?: boolean,
+
+    currency?: string,
     currencySymbolPosition?: 'prefix' | 'suffix'
+
+    emptyValue?: number | '',
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    allowClear: false,
-    currency: '',
-    max: Number.MAX_SAFE_INTEGER,
-    min: Number.MAX_SAFE_INTEGER,
-    minus: false,
-    placeholder: '',
-    emptyValue: '',
-    precision: 0,
-    separator: ',',
-    thousandSeparator: undefined,
-    decimalSeparator: undefined,
     outputType: 'Number',
-    readOnly: false,
-    readOnlyClass: '',
-    disabled: false,
+
+    min: Number.MIN_SAFE_INTEGER,
+    max: Number.MAX_SAFE_INTEGER,
+
+    precision: 0,
+    thousandSeparator: ',',
+    decimalSeparator: '.',
+
+    currency: '',
     currencySymbolPosition: 'prefix',
+
+    emptyValue: '',
 })
 
 const amount = ref('')
+const focus = ref(false)
+const inputElement = ref<HTMLInputElement>()
 
-const emit = defineEmits(['update:modelValue', 'change', 'blur', 'focus'])
+const emit = defineEmits(['update:modelValue', 'blur', 'focus'])
 
 const amountNumber = computed(() => {
     return unformatValue(amount.value)
 })
 
 const valueNumber = computed(() => {
-    return unformatValue(modelValue.value)
-})
-
-const decimalSeparatorSymbol = computed(() => {
-    if (typeof props.decimalSeparator !== 'undefined') {
-        return props.decimalSeparator
-    }
-    if (props.separator === ',') {
-        return '.'
-    }
-    return ','
-})
-
-const thousandSeparatorSymbol = computed(() => {
-    if (typeof props.thousandSeparator !== 'undefined') {
-        return props.thousandSeparator
-    }
-    if (props.separator === '.') {
-        return '.'
-    }
-    if (props.separator === 'space') {
-        return ' '
-    }
-    return ','
+    return unformatValue(props.modelValue)
 })
 
 const symbolPosition = computed(() => {
@@ -106,65 +70,64 @@ const symbolPosition = computed(() => {
     return props.currencySymbolPosition === 'suffix' ? '%v %s' : '%s %v'
 })
 
-// Set default value props when valueNumber has some value
-if (valueNumber.value || isDeliberatelyZero()) {
+process(valueNumber.value)
+amount.value = format(valueNumber.value)
+
+// watch all props
+watch(props, () => {
+    // don't update if focussed
+    if (focus.value) {
+        return
+    }
     process(valueNumber.value)
     amount.value = format(valueNumber.value)
+})
 
-    // In case of delayed props value.
-    setTimeout(() => {
-        process(valueNumber.value)
-        amount.value = format(valueNumber.value)
-    }, 500)
-}
-
-function onChangeHandler (e: Event) {
-    emit('change', e)
-}
-
-function onBlurHandler (e: Event) {
+function onBlurHandler(e: Event) {
+    focus.value = false
     emit('blur', e)
     amount.value = format(valueNumber.value)
 }
 
-function onFocusHandler (e: Event) {
+function onFocusHandler(e: Event) {
+    focus.value = true
     emit('focus', e)
-    if(typeof valueNumber.value === 'string' && valueNumber.value === '') {
+    if (typeof valueNumber.value === 'string' && valueNumber.value === '') {
         return ''
     } else {
         amount.value = formatMoney(valueNumber.value, {
             symbol: '',
             format: '%v',
             thousand: '',
-            decimal: decimalSeparatorSymbol.value,
+            decimal: props.decimalSeparator,
             precision: Number(props.precision)
         })
     }
 }
 
-function onInputHandler () {
+function onInputHandler() {
     process(amountNumber.value)
 }
 
 /**
  * Validate value before update the component.
  */
-function process (value: string | number) {
+function process(value: string | number) {
     if (typeof value === 'string' && value === '') {
         emit('update:modelValue', value)
     } else {
-        value = parseFloat(value + '')
+        value = Number(value)
         if (value >= props.max) {
             update(props.max)
+            return
         }
         if (value <= props.min) {
             update(props.min)
+            return
         }
         if (value > props.min && value < props.max) {
             update(value)
-        }
-        if (!props.minus && value < 0) {
-            props.min >= 0 ? update(props.min) : update(0)
+            return
         }
     }
 }
@@ -172,7 +135,7 @@ function process (value: string | number) {
 /**
  * Update parent component model value.
  */
-function update (value: string | number) {
+function update(value: string | number) {
     const fixedValue = toFixed(value, props.precision)
     const output = props.outputType.toLowerCase() === 'string' ? fixedValue : Number(fixedValue)
     emit('update:modelValue', output)
@@ -181,34 +144,27 @@ function update (value: string | number) {
 /**
  * Format value using symbol and separator.
  */
-function format (value: string | number) {
-    if(typeof value === 'string' && value === '') {
+function format(value: string | number) {
+    if (typeof value === 'string' && value === '') {
         return ''
     }
     return formatMoney(value, {
         symbol: props.currency,
         format: symbolPosition.value,
         precision: Number(props.precision),
-        decimal: decimalSeparatorSymbol.value,
-        thousand: thousandSeparatorSymbol.value
+        decimal: props.decimalSeparator,
+        thousand: props.thousandSeparator
     })
 }
 
 /**
  * Remove symbol and separator.
  */
-function unformatValue (value: string | number) {
+function unformatValue(value: string | number) {
     const toUnformat = typeof value === 'string' && value === '' ? props.emptyValue : value
-    if(typeof toUnformat === 'string' && toUnformat === '') {
+    if (typeof toUnformat === 'string' && toUnformat === '') {
         return ''
     }
-    return unformat(toUnformat, decimalSeparatorSymbol.value)
-}
-
-/**
- * Check if value was deliberately set to zero and not just evaluated
- */
-function isDeliberatelyZero () {
-    return valueNumber.value === 0 && modelValue.value !== ''
+    return unformat(toUnformat, props.decimalSeparator)
 }
 </script>
