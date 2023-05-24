@@ -16,7 +16,7 @@ export default defineConfig({
     lib: {
       entry: 'src/VueInputNumberPlugin.ts',
       formats: ['es', 'cjs'],
-      name: 'VueInputNumber',
+      name: 'VueInputNumberPlugin',
       fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs')
     },
     rollupOptions: {

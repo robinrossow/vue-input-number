@@ -1,21 +1,21 @@
 <template>
     <h1>Vue Input Number</h1>
-    <p>Vue Input Number is a unstyled input component for Vue 3.</p>
+    <p>Vue Input Number is a unstyled input component for Vue 3 written in TypeScript.</p>
     <h2>Installation</h2>
     <pre>npm add @robin-rossow/vue-input-number</pre>
     <h2>Add to vue globally</h2>
     <pre>
-import VueInputNumber from '@robin-rossow/vue-input-number'
+import VueInputNumberPlugin from '@robin-rossow/vue-input-number'
 
 import { createApp } from 'vue'
 import App from './App.vue'
 
 createApp(App)
-    .use(VueInputNumber)
+    .use(VueInputNumberPlugin)
     .mount('#app')
     </pre>
     <h2>Add locally in a component</h2>
-    <pre>import VueInputNumber from '@robin-rossow/vue-input-number'</pre>
+    <pre>import { VueInputNumber } from '@robin-rossow/vue-input-number'</pre>
     <h2>Usage</h2>
     <pre>&lt;VueInputNumber v-model="ourModel" /&gt;</pre>
     <h2>Props</h2>
@@ -70,7 +70,7 @@ createApp(App)
                 <td>decimalSeparator</td>
                 <td>❌</td>
                 <td>string | undefined</td>
-                <td>'.'</td>
+                <td>ccccccccccc</td>
             </tr>
             <tr>
                 <td>currency</td>
