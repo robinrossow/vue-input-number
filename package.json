@@ -1,6 +1,6 @@
 {
   "name": "@robin-rossow/vue-input-number",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [
     "component",
     "currency",
@@ -17,7 +17,7 @@
   "exports": {
     ".": "./dist/index.js"
   },
-  "types": "./dist/src/VueInputNumberPlugin.d.ts",
+  "types": "./dist/VueInputNumberPlugin.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",

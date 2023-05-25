@@ -46,7 +46,7 @@ import { VueInputNumber } from '@robin-rossow/vue-input-number'
 | thousandSeparator      | ❌        | string &#124; undefined  | ','                     |
 | decimalSeparator       | ❌        | string &#124; undefined  | ','                     |
 | currency               | ❌        | string                   | ''                      |
-| currencySymbolPosition | ❌        | 'prefix' &#124;'suffix'  | 'prefix'                |
+| currencySymbolPosition | ❌        | 'prefix' &#124;' suffix' | 'prefix'                |
 | emptyValue             | ❌        | number &#124; ''         | ''                      |
 
 ## License
