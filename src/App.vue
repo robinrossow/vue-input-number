@@ -33,7 +33,7 @@ createApp(App)
             <tr>
                 <td>v-model</td>
                 <td>✅</td>
-                <td>string | number</td>
+                <td>string | number | undefined</td>
                 <td></td>
             </tr>
             <tr>
