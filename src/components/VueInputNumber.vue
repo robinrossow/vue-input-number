@@ -81,9 +81,6 @@ watch(props, () => {
     if (focus.value) {
         return
     }
-    if (props.modelValue == undefined) {
-        return
-    }
     process(valueNumber.value)
     amount.value = format(valueNumber.value)
 })
@@ -166,7 +163,7 @@ function format(value: string | number) {
  * Remove symbol and separator.
  */
 function unformatValue(value: string | number | undefined) {
-    const toUnformat = typeof value === 'string' && value === '' ? props.emptyValue : value
+    const toUnformat = typeof value === 'string' && value === '' || value === undefined ? props.emptyValue : value
     if (typeof toUnformat === 'string' && toUnformat === '') {
         return ''
     }

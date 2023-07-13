@@ -199,7 +199,7 @@ createApp(App)
 <script setup lang="ts">
 import {ref} from 'vue'
 
-const testNumber = ref('3000')
+const testNumber = ref(undefined)
 const currency = ref('€')
 const min = ref(10)
 const max = ref(200)
