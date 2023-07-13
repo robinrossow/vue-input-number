@@ -17,7 +17,7 @@ import toFixed from 'accounting-js/lib/toFixed.js'
 import unformat from 'accounting-js/lib/unformat.js'
 
 export interface Props {
-    modelValue: string | number,
+    modelValue: string | number | undefined,
     outputType?: 'Number' | 'String',
 
     min?: number,
@@ -70,13 +70,18 @@ const symbolPosition = computed(() => {
     return props.currencySymbolPosition === 'suffix' ? '%v %s' : '%s %v'
 })
 
-process(valueNumber.value)
-amount.value = format(valueNumber.value)
+if (props.modelValue !== undefined) {
+    process(valueNumber.value)
+    amount.value = format(valueNumber.value)
+}
 
 // watch all props
 watch(props, () => {
     // don't update if focussed
     if (focus.value) {
+        return
+    }
+    if (props.modelValue == undefined) {
         return
     }
     process(valueNumber.value)
@@ -160,7 +165,7 @@ function format(value: string | number) {
 /**
  * Remove symbol and separator.
  */
-function unformatValue(value: string | number) {
+function unformatValue(value: string | number | undefined) {
     const toUnformat = typeof value === 'string' && value === '' ? props.emptyValue : value
     if (typeof toUnformat === 'string' && toUnformat === '') {
         return ''

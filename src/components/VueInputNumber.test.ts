@@ -111,3 +111,13 @@ test('should return empty string when focused and value is empty string', async(
     await wrapper.find('#vue-input-number').trigger('focus')
     expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],['']])
 })
+
+test('should not emit anything if set to undefined at the start', async() => {
+    const newWrapper = mount(VueInputNumber, {
+        props: {
+            modelValue: undefined,
+            id: 'vue-input-number'
+        }
+    })
+    expect(newWrapper.emitted()['update:modelValue']).toStrictEqual(undefined)
+})
