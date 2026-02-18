@@ -1,6 +1,6 @@
 {
   "name": "@robin-rossow/vue-input-number",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "keywords": [
     "component",
     "currency",
@@ -17,10 +17,14 @@
   "files": ["dist"],
   "main": "./dist/vue-input-number.umd.cjs",
   "module": "./dist/vue-input-number.js",
-  "exports": {
-    ".": {
-      "import": "./dist/vue-input-number.js",
-      "require": "./dist/vue-input-number.umd.cjs"
+  ".": {
+    "import": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/vue-input-number.js"
+    },
+    "require": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/vue-input-number.umd.cjs"
     }
   },
   "types": "./dist/index.d.ts",
