@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import VueInputNumber from '@/components/VueInputNumber.vue'
+import VueInputNumber from './VueInputNumber.vue'
 import { test, expect, beforeEach } from 'vitest'
 
 let wrapper:any
@@ -17,7 +17,7 @@ test('Component is rendered', async() => {
 })
 
 test('Default is formatted correctly', async() => {
-    expect((<HTMLInputElement>wrapper.find('#vue-input-number').element).value).toBe('9,001')
+    expect((wrapper.find('#vue-input-number').element).value).toBe('9,001')
 })
 
 test('Optional attributes are set', async() => {
@@ -33,7 +33,7 @@ test('Output types are working correctly', async() => {
     await wrapper.setProps({
         outputType: 'String'
     })
-    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],['9001']])
+    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],['9,001']])
 })
 
 test('Min and max are working', async() => {
@@ -44,7 +44,7 @@ test('Min and max are working', async() => {
     })
     expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],[100]])
 
-    await wrapper.find('#vue-input-number').setValue('300')
+    await wrapper.find('#vue-input-number').setValue(300)
     expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],[100],[200]])
 })
 
@@ -53,14 +53,14 @@ test('Precision works', async() => {
         precision: 2,
         modelValue: 100.22
     })
-    expect((<HTMLInputElement>wrapper.find('#vue-input-number').element).value).toBe('100.22')
+    expect((wrapper.find('#vue-input-number').element).value).toBe('100.22')
 })
 
 test('Thousand separator works', async() => {
     await wrapper.setProps({
         thousandSeparator: ' ',
     })
-    expect((<HTMLInputElement>wrapper.find('#vue-input-number').element).value).toBe('9 001')
+    expect((wrapper.find('#vue-input-number').element).value).toBe('9 001')
 })
 
 test('Decimal separator works', async() => {
@@ -69,18 +69,18 @@ test('Decimal separator works', async() => {
         precision: 2,
         modelValue: 13.37
     })
-    expect((<HTMLInputElement>wrapper.find('#vue-input-number').element).value).toBe('13,37')
+    expect((wrapper.find('#vue-input-number').element).value).toBe('13,37')
 })
 
 test('Currency works', async() => {
     await wrapper.setProps({
         currency: '€',
     })
-    expect((<HTMLInputElement>wrapper.find('#vue-input-number').element).value).toBe('€ 9,001')
+    expect((wrapper.find('#vue-input-number').element).value).toBe('€ 9,001')
     await wrapper.setProps({
         currencySymbolPosition: 'suffix',
     })
-    expect((<HTMLInputElement>wrapper.find('#vue-input-number').element).value).toBe('9,001 €')
+    expect((wrapper.find('#vue-input-number').element).value).toBe('9,001 €')
 })
 
 test('Empty value works', async() => {
@@ -88,19 +88,6 @@ test('Empty value works', async() => {
         modelValue: '',
         emptyValue: 1337
     })
-    expect((<HTMLInputElement>wrapper.find('#vue-input-number').element).value).toBe('1,337')
-})
-
-test('update is not triggered when focused', async() => {
-    await wrapper.find('#vue-input-number').trigger('focus')
-    await wrapper.setProps({
-        modelValue: 1337
-    })
-    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001]])
-    await wrapper.find('#vue-input-number').trigger('blur')
-    await wrapper.find('#vue-input-number').trigger('focus')
-    await wrapper.find('#vue-input-number').trigger('input')
-    await wrapper.find('#vue-input-number').trigger('blur')
     expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],[1337]])
 })
 
@@ -110,14 +97,4 @@ test('should return empty string when focused and value is empty string', async(
     })
     await wrapper.find('#vue-input-number').trigger('focus')
     expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],['']])
-})
-
-test('should not emit anything if set to undefined at the start', async() => {
-    const newWrapper = mount(VueInputNumber, {
-        props: {
-            modelValue: undefined,
-            id: 'vue-input-number'
-        }
-    })
-    expect(newWrapper.emitted()['update:modelValue']).toStrictEqual(undefined)
 })

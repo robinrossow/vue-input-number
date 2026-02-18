@@ -1,37 +1,26 @@
-import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
+import { resolve } from "path"
 import vue from '@vitejs/plugin-vue'
-import dts from 'vite-plugin-dts'
 
-
-// https://vitejs.dev/config/
 export default defineConfig({
-  base: '/vue-input-number/',
-  plugins: [
-    vue(),
-    dts()
-  ],
+  plugins: [vue()],
   build: {
     lib: {
-      entry: 'src/VueInputNumberPlugin.ts',
-      formats: ['es', 'cjs'],
-      name: 'VueInputNumberPlugin',
-      fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs')
+      entry: resolve(__dirname, "src/index.ts"),
+      name: "VueInputNumber",
+      fileName: "vue-input-number",
     },
     rollupOptions: {
-      external: ['vue'],
+      external: ["vue"],
       output: {
-        exports: 'named',
         globals: {
-          vue: 'Vue'
-        }
-      }
+          vue: "Vue",
+        },
+      },
     },
   },
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+  // @ts-ignore -_-
+  test: {
+    environment: 'happy-dom'
   }
 })

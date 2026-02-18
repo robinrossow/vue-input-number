@@ -1,172 +1,160 @@
-<template>
-    <input
-        v-bind="$attrs"
-        ref="inputElement"
-        v-model="amount"
-        :value="amount"
-        @blur="onBlurHandler"
-        @input="onInputHandler"
-        @focus="onFocusHandler"
-    >
-</template>
-
 <script lang="ts" setup>
-import {ref, computed, watch} from 'vue'
-import formatMoney from 'accounting-js/lib/formatMoney.js'
-import toFixed from 'accounting-js/lib/toFixed.js'
-import unformat from 'accounting-js/lib/unformat.js'
-
+import { ref, computed, onMounted, watch } from 'vue'
+import { formatMoney, unformat } from 'accounting-js'
 export interface Props {
-    modelValue: string | number | undefined,
-    outputType?: 'Number' | 'String',
+  modelValue: string | number | undefined,
+  outputType?: 'Number' | 'String',
 
-    min?: number,
-    max?: number,
+  min?: number,
+  max?: number,
 
-    precision?: number,
-    thousandSeparator?: string | undefined,
-    decimalSeparator?: string | undefined,
+  precision?: number,
+  thousandSeparator?: string | undefined,
+  decimalSeparator?: string | undefined,
 
-    currency?: string,
-    currencySymbolPosition?: 'prefix' | 'suffix'
+  currency?: string,
+  currencySymbolPosition?: 'prefix' | 'suffix'
 
-    emptyValue?: number | '',
+  emptyValue?: number | '',
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    outputType: 'Number',
+  outputType: 'Number',
 
-    min: Number.MIN_SAFE_INTEGER,
-    max: Number.MAX_SAFE_INTEGER,
+  min: Number.MIN_SAFE_INTEGER,
+  max: Number.MAX_SAFE_INTEGER,
 
-    precision: 0,
-    thousandSeparator: ',',
-    decimalSeparator: '.',
+  precision: 0,
+  thousandSeparator: ',',
+  decimalSeparator: '.',
 
-    currency: '',
-    currencySymbolPosition: 'prefix',
+  currency: '',
+  currencySymbolPosition: 'prefix',
 
-    emptyValue: '',
+  emptyValue: '',
 })
-
-const amount = ref('')
-const focus = ref(false)
-const inputElement = ref<HTMLInputElement>()
 
 const emit = defineEmits(['update:modelValue', 'blur', 'focus'])
 
-const amountNumber = computed(() => {
-    return unformatValue(amount.value)
-})
+// number shown in the input field - changes depending on if focused or not
+const displayNumber = ref('')
 
-const valueNumber = computed(() => {
-    return unformatValue(props.modelValue)
-})
+const focus = ref(false)
 
 const symbolPosition = computed(() => {
-    if (!props.currency) {
-        return '%v'
-    }
-    return props.currencySymbolPosition === 'suffix' ? '%v %s' : '%s %v'
+  if (!props.currency) {
+    return '%v'
+  }
+  return props.currencySymbolPosition === 'suffix' ? '%v %s' : '%s %v'
 })
 
-if (props.modelValue !== undefined) {
-    process(valueNumber.value)
-    amount.value = format(valueNumber.value)
+const realNumber = computed(() => {
+  return minMax(unformat(displayNumber.value, props.decimalSeparator)) || 0
+})
+
+function format(value: number ) {
+  return formatMoney(value, {
+    symbol: props.currency,
+    format: symbolPosition.value,
+
+    thousand: props.thousandSeparator,
+    decimal: props.decimalSeparator,
+    precision: Number(props.precision)
+  })
 }
 
-// watch all props
-watch(props, () => {
-    // don't update if focussed
-    if (focus.value) {
-        return
-    }
-    process(valueNumber.value)
-    amount.value = format(valueNumber.value)
+const blurNumber = computed(() => {
+  return format(realNumber.value)
+})
+
+const focusNumber = computed(() => {
+  return formatMoney(realNumber.value, {
+    symbol: '',
+    format: '%v',
+
+    thousand: props.thousandSeparator,
+    decimal: props.decimalSeparator,
+    precision: Number(props.precision)
+  })
 })
 
 function onBlurHandler(e: Event) {
-    focus.value = false
-    emit('blur', e)
-    amount.value = format(valueNumber.value)
+  focus.value = false
+  displayNumber.value = blurNumber.value
+  updateModel()
+  emit('blur', e)
 }
 
 function onFocusHandler(e: Event) {
-    focus.value = true
-    emit('focus', e)
-    if (typeof valueNumber.value === 'string' && valueNumber.value === '') {
-        return ''
-    } else {
-        amount.value = formatMoney(valueNumber.value, {
-            symbol: '',
-            format: '%v',
-            thousand: '',
-            decimal: props.decimalSeparator,
-            precision: Number(props.precision)
-        })
-    }
+  focus.value = true
+  displayNumber.value = focusNumber.value
+  emit('focus', e)
 }
 
 function onInputHandler() {
-    process(amountNumber.value)
+  if (!focus.value) {
+    updateModel()
+  }
 }
 
-/**
- * Validate value before update the component.
- */
-function process(value: string | number) {
-    if (typeof value === 'string' && value === '') {
-        emit('update:modelValue', value)
-    } else {
-        value = Number(value)
-        if (value >= props.max) {
-            update(props.max)
-            return
-        }
-        if (value <= props.min) {
-            update(props.min)
-            return
-        }
-        if (value > props.min && value < props.max) {
-            update(value)
-            return
-        }
-    }
+function minMax(value: number) {
+  if (value < props.min) {
+    return props.min
+  }
+  if (value > props.max) {
+    return props.max
+  }
+  return value
+}
+
+function setDisplayNumber(value: string | number | undefined) {
+  if (!value) {
+    displayNumber.value = props.emptyValue === '' ? '' : String(minMax(props.emptyValue))
+    return
+  }
+
+  if (typeof value === 'string') {
+    displayNumber.value = format(minMax(unformat(value, props.decimalSeparator)))
+    return
+  }
+
+  displayNumber.value = format(minMax(value))
 }
 
 /**
  * Update parent component model value.
  */
-function update(value: string | number) {
-    const fixedValue = toFixed(value, props.precision)
-    const output = props.outputType.toLowerCase() === 'string' ? fixedValue : Number(fixedValue)
-    emit('update:modelValue', output)
+function updateModel() {
+  if (!realNumber.value) {
+    emit('update:modelValue', props.emptyValue)
+    return
+  }
+  const output = props.outputType.toLowerCase() === 'string' ? focusNumber.value : realNumber.value
+  emit('update:modelValue', output)
 }
 
-/**
- * Format value using symbol and separator.
- */
-function format(value: string | number) {
-    if (typeof value === 'string' && value === '') {
-        return ''
-    }
-    return formatMoney(value, {
-        symbol: props.currency,
-        format: symbolPosition.value,
-        precision: Number(props.precision),
-        decimal: props.decimalSeparator,
-        thousand: props.thousandSeparator
-    })
-}
+onMounted(() => {
+  setDisplayNumber(props.modelValue)
+  updateModel()
+})
 
-/**
- * Remove symbol and separator.
- */
-function unformatValue(value: string | number | undefined) {
-    const toUnformat = typeof value === 'string' && value === '' || value === undefined ? props.emptyValue : value
-    if (typeof toUnformat === 'string' && toUnformat === '') {
-        return ''
-    }
-    return unformat(toUnformat, props.decimalSeparator)
-}
+watch(props, () => {
+  // don't update if focussed
+  if (focus.value) {
+    return
+  }
+  setDisplayNumber(props.modelValue)
+  updateModel()
+})
+
 </script>
+
+<template>
+  <input
+      v-bind="$attrs"
+      v-model="displayNumber"
+      @blur="onBlurHandler"
+      @input="onInputHandler"
+      @focus="onFocusHandler"
+  >
+</template>
