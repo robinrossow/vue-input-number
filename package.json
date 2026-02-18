@@ -32,6 +32,7 @@
     "dev": "vite",
     "test": "vitest",
     "build": "vite build && vue-tsc --emitDeclarationOnly",
+    "build-gh-pages": "vite build --config vite-gh-pages.config.ts",
     "preview": "vite preview"
   },
   "dependencies": {
