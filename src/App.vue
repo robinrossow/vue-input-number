@@ -4,8 +4,8 @@ import VueInputNumber from "./components/VueInputNumber.vue";
 
 const testNumber = ref(13.37)
 const currency = ref('€')
-const min = ref(0)
-const max = ref(2000)
+const min = ref<'' | number>(0)
+const max = ref<'' | number>(2000)
 const placeholder = ref('Placeholder')
 const emptyValue = ref('')
 const precision = ref(2)
@@ -40,8 +40,8 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
       <tbody>
       <tr>
         <td>v-model</td>
-        <td>✅</td>
-        <td>string | number | undefined</td>
+        <td>❌</td>
+        <td>Ref&lt;string | number | undefined&gt;</td>
         <td></td>
       </tr>
       <tr>
@@ -71,13 +71,13 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
       <tr>
         <td>thousandSeparator</td>
         <td>❌</td>
-        <td>string | undefined</td>
+        <td>string</td>
         <td>','</td>
       </tr>
       <tr>
         <td>decimalSeparator</td>
         <td>❌</td>
-        <td>string | undefined</td>
+        <td>string</td>
         <td>'.'</td>
       </tr>
       <tr>
@@ -109,8 +109,8 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
           id="vue-input-number"
           v-model="testNumber"
           :currency="currency"
-          :min="Number(min)"
-          :max="Number(max)"
+          :min="min === '' ? undefined : min"
+          :max="max === '' ? undefined : max"
           class="test"
           :placeholder="placeholder"
           :emptyValue="emptyValue === '' ? '' : Number(emptyValue)"

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { formatMoney, unformat } from 'accounting-js'
+
 export interface Props {
   modelValue: string | number | undefined,
   outputType?: 'Number' | 'String',
@@ -9,8 +10,8 @@ export interface Props {
   max?: number,
 
   precision?: number,
-  thousandSeparator?: string | undefined,
-  decimalSeparator?: string | undefined,
+  thousandSeparator?: string,
+  decimalSeparator?: string,
 
   currency?: string,
   currencySymbolPosition?: 'prefix' | 'suffix'
