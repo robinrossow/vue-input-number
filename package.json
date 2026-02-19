@@ -1,6 +1,6 @@
 {
   "name": "@robin-rossow/vue-input-number",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "keywords": [
     "component",
     "currency",
@@ -14,12 +14,14 @@
   ],
   "type": "module",
   "private": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/vue-input-number.umd.cjs",
   "module": "./dist/vue-input-number.js",
   ".": {
     "import": {
-      "types": "./dist/index.d.mts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/vue-input-number.js"
     },
     "require": {
@@ -30,7 +32,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "test": "vitest",
+    "test": "vitest run --coverage",
     "build": "vite build && vue-tsc --emitDeclarationOnly",
     "build-gh-pages": "vite build --config vite-gh-pages.config.ts",
     "preview": "vite preview"
@@ -42,6 +44,7 @@
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.2",
+    "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
     "happy-dom": "^20.6.1",

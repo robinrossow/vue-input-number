@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import VueInputNumber from "./components/VueInputNumber.vue";
+import VueInputNumber from "./components/VueInputNumber.vue"
 
-const testNumber = ref(13.37)
-const currency = ref('€')
-const min = ref<'' | number>(0)
-const max = ref<'' | number>(2000)
-const placeholder = ref('Placeholder')
-const emptyValue = ref('')
+const testNumber = ref(1337)
+const emptyValue = ref<'' | 0>('')
 const precision = ref(2)
 const thousandSeparator = ref('.')
 const decimalSeparator = ref(',')
 const outputType = ref<'Number' | 'String'>('Number')
-const readOnly = ref('false')
-const disabled = ref('false')
-const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
+
+const options = ref([
+  { value: '', text: "''" },
+  { value: 0, text: '0' },
+])
 </script>
 
 <template>
@@ -40,7 +38,7 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
       <tbody>
       <tr>
         <td>v-model</td>
-        <td>❌</td>
+        <td>✅</td>
         <td>Ref&lt;string | number | undefined&gt;</td>
         <td></td>
       </tr>
@@ -49,18 +47,6 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
         <td>❌</td>
         <td>'Number' | 'String'</td>
         <td>'Number'</td>
-      </tr>
-      <tr>
-        <td>min</td>
-        <td>❌</td>
-        <td>number</td>
-        <td>Number.MIN_SAFE_INTEGER</td>
-      </tr>
-      <tr>
-        <td>max</td>
-        <td>❌</td>
-        <td>number</td>
-        <td>Number.MAX_SAFE_INTEGER</td>
       </tr>
       <tr>
         <td>precision</td>
@@ -81,21 +67,9 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
         <td>'.'</td>
       </tr>
       <tr>
-        <td>currency</td>
-        <td>❌</td>
-        <td>string</td>
-        <td>''</td>
-      </tr>
-      <tr>
-        <td>currencySymbolPosition</td>
-        <td>❌</td>
-        <td>'prefix' | 'suffix'</td>
-        <td>'prefix'</td>
-      </tr>
-      <tr>
         <td>emptyValue</td>
         <td>❌</td>
-        <td>number | ''</td>
+        <td>'' | 0</td>
         <td>''</td>
       </tr>
       </tbody>
@@ -108,22 +82,14 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
       <VueInputNumber
           id="vue-input-number"
           v-model="testNumber"
-          :currency="currency"
-          :min="min === '' ? undefined : min"
-          :max="max === '' ? undefined : max"
           class="test"
-          :placeholder="placeholder"
-          :emptyValue="emptyValue === '' ? '' : Number(emptyValue)"
+          :emptyValue="emptyValue"
           :precision="Number(precision)"
           :thousandSeparator="thousandSeparator"
           :decimalSeparator="decimalSeparator"
           :outputType="outputType"
-          :readOnly="JSON.parse(readOnly)"
-          :disabled="JSON.parse(disabled)"
-          :currencySymbolPosition="currencySymbolPosition"
       />
     </div>
-
     <div>
       Value: {{testNumber}} Type: {{ typeof testNumber }}
     </div>
@@ -135,17 +101,6 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
   <label for="outputType-true">Number</label>
   <input type="radio" id="outputType-false" value="String" v-model="outputType"/>
   <label for="outputType-false">String</label>
-
-  <div class="flex">
-    <div>
-      <label class="label" for="min">min</label>
-      <input v-model="min" id="min" type="number"/>
-    </div>
-    <div>
-      <label class="label" for="max">max</label>
-      <input v-model="max" id="max" type="number"/>
-    </div>
-  </div>
 
   <div class="flex">
     <div>
@@ -164,43 +119,12 @@ const currencySymbolPosition = ref<'prefix' | 'suffix'>('suffix')
 
   <div class="flex">
     <div>
-      <label class="label" for="currency">currency</label>
-      <input v-model="currency" id="currency"/>
-    </div>
-    <div>
-      <label class="label">currencySymbolPosition</label>
-      <input type="radio" id="currencySymbolPosition-prefix" value="prefix" v-model="currencySymbolPosition"/>
-      <label for="currencySymbolPosition-prefix">prefix</label>
-      <input type="radio" id="currencySymbolPosition-suffix" value="suffix" v-model="currencySymbolPosition"/>
-      <label for="currencySymbolPosition-suffix">suffix</label>
-    </div>
-  </div>
-
-  <div class="flex">
-    <div>
       <label class="label" for="emptyValue">emptyValue</label>
-      <input v-model="emptyValue" id="emptyValue" />
-    </div>
-    <div>
-      <label class="label" for="placeholder">placeholder</label>
-      <input v-model="placeholder" id="placeholder"/>
-    </div>
-  </div>
-
-  <div class="flex">
-    <div>
-      <label class="label">readonly</label>
-      <input type="radio" id="readOnly-true" value="true" v-model="readOnly"/>
-      <label for="readOnly-true">true</label>
-      <input type="radio" id="readOnly-false" value="false" v-model="readOnly"/>
-      <label for="readOnly-false">false</label>
-    </div>
-    <div>
-      <label class="label">disabled</label>
-      <input type="radio" id="disabled-true" value="true" v-model="disabled"/>
-      <label for="disabled-true">true</label>
-      <input type="radio" id="disabled-false" value="false" v-model="disabled"/>
-      <label for="disabled-false">false</label>
+      <select v-model="emptyValue" id="emptyValue">
+        <option v-for="option in options" :value="option.value">
+          {{ option.text }}
+        </option>
+      </select>
     </div>
   </div>
 </template>

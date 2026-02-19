@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import { defineConfig } from 'vite'
 import { resolve } from "path"
 import vue from '@vitejs/plugin-vue'
@@ -19,8 +21,10 @@ export default defineConfig({
       },
     },
   },
-  // @ts-ignore -_-
   test: {
-    environment: 'happy-dom'
+    environment: 'happy-dom',
+    coverage: {
+      provider: 'v8'
+    },
   }
 })

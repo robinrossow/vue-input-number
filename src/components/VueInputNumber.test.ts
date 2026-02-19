@@ -20,40 +20,25 @@ test('Default is formatted correctly', async() => {
     expect((wrapper.find('#vue-input-number').element).value).toBe('9,001')
 })
 
-test('Optional attributes are set', async() => {
-    await wrapper.setProps({
-        placeholder: 'test placeholder',
-        class: 'test-class',
-    })
-    expect(wrapper.find('#vue-input-number').attributes('placeholder')).toBe('test placeholder')
-    expect(wrapper.find('#vue-input-number').attributes('class')).toBe('test-class')
-})
 test('Output types are working correctly', async() => {
-    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001]])
     await wrapper.setProps({
         outputType: 'String'
     })
-    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],['9,001']])
-})
+    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([['9,001']])
 
-test('Min and max are working', async() => {
     await wrapper.setProps({
-        min: 100,
-        max: 200,
-        modelValue: 50
+        outputType: 'Number'
     })
-    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],[100]])
-
-    await wrapper.find('#vue-input-number').setValue(300)
-    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],[100],[200]])
+    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([['9,001'], [9001]])
 })
 
 test('Precision works', async() => {
     await wrapper.setProps({
         precision: 2,
-        modelValue: 100.22
+        modelValue: 100.222
     })
     expect((wrapper.find('#vue-input-number').element).value).toBe('100.22')
+    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[100.22]])
 })
 
 test('Thousand separator works', async() => {
@@ -61,6 +46,7 @@ test('Thousand separator works', async() => {
         thousandSeparator: ' ',
     })
     expect((wrapper.find('#vue-input-number').element).value).toBe('9 001')
+    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001]])
 })
 
 test('Decimal separator works', async() => {
@@ -70,31 +56,24 @@ test('Decimal separator works', async() => {
         modelValue: 13.37
     })
     expect((wrapper.find('#vue-input-number').element).value).toBe('13,37')
+    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[13.37]])
 })
 
-test('Currency works', async() => {
-    await wrapper.setProps({
-        currency: '€',
-    })
-    expect((wrapper.find('#vue-input-number').element).value).toBe('€ 9,001')
-    await wrapper.setProps({
-        currencySymbolPosition: 'suffix',
-    })
-    expect((wrapper.find('#vue-input-number').element).value).toBe('9,001 €')
-})
-
-test('Empty value works', async() => {
+test('Empty value 0 works', async() => {
     await wrapper.setProps({
         modelValue: '',
-        emptyValue: 1337
+        emptyValue: 0
     })
-    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],[1337]])
+    expect((wrapper.find('#vue-input-number').element).value).toBe('0')
+    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[0]])
 })
 
-test('should return empty string when focused and value is empty string', async() => {
+test('Empty value 0 output string works', async() => {
     await wrapper.setProps({
-        modelValue: ''
+        modelValue: '',
+        emptyValue: 0,
+        outputType: 'String'
     })
-    await wrapper.find('#vue-input-number').trigger('focus')
-    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([[9001],['']])
+    expect((wrapper.find('#vue-input-number').element).value).toBe('0')
+    expect(wrapper.emitted()['update:modelValue']).toStrictEqual([['0']])
 })
