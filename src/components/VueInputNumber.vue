@@ -49,6 +49,7 @@ const formattedNumber = computed(() => {
 })
 
 function onBlurHandler(e: Event) {
+  focus.value = false
   setDisplayNumber(numberInput.value!.value)
   emit('blur', e)
 }
